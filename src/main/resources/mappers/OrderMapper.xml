@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace = 所需实现的接口全限定名-->
+<mapper namespace="com.qf.wfx.merchant.dao.OrderDAO">
+    <resultMap id="orderMap" type="com.qf.wfx.merchant.beans.Order">
+        <id column="oid" property="oid"/>
+        <result column="order_id" property="orderId"/>
+        <result column="buyer_phone" property="buyerPhone"/>
+        <result column="good_id" property="goodId"/>
+        <result column="order_time" property="orderTime"/>
+        <result column="channel_id" property="channelId"/>
+        <result column="state" property="state"/>
+        <result column="buy_num" property="buyNum"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="buyer_reamrk" property="buyerReamrk"/>
+        <result column="pay_type" property="payType"/>
+        <result column="buyer_name" property="buyerName"/>
+        <result column="sku_id" property="skuId"/>
+        <result column="user_id" property="userId"/>
+        <result column="address" property="address"/>
+        <result column="courier_id" property="courierId"/>
+        <result column="order_remark" property="orderRemark"/>
+        <result column="sender_type" property="senderType"/>
+        <result column="order_type" property="orderType"/>
+        <result column="admin_remark" property="adminRemark"/>
+        <result column="operator" property="operator"/>
+        <result column="check_time" property="checkTime"/>
+        <result column="order_ip" property="orderIp"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="alipay_state" property="alipayState"/>
+        <association property="good" javaType="com.qf.wfx.merchant.beans.Good">
+            <result column="good_name" property="goodName"/>
+        </association>
+        <association property="memeber" javaType="memeber">
+            <result column="account" property="memAccount"/>
+        </association>
+        <association property="goodSku" javaType="goodSku">
+            <result column="sku_name" property="skuName"/>
+        </association>
+    </resultMap>
+<!--    public List<Order> listAllOrder(String customerId);-->
+    <select id="listAllOrder" resultMap="orderMap">
+         select oid
+         from wxb_order inner join wxb_good on wxb_good.good_id = wxb_order.good_id
+        where wxb_good.customer_id = #{customerId}
+    </select>
+<!--    public List<Order> selectOrderByCustomerId(@Param("customerId") String customerId,-->
+<!--    @Param("start") int start,-->
+<!--    @Param("limit") int limit);   // 根据商户id查询所有的商品信息-->
+    <select id="selectOrderByCustomerId" resultMap="orderMap">
+         select
+         DISTINCT wxb_order.oid,
+		 wxb_order.order_id,
+         wxb_good.good_name,
+         wxb_good_sku.sku_name,
+         wxb_order.buy_num,
+         wxb_order.buyer_name,
+         wxb_order.buyer_phone,
+         wxb_order.address,
+         wxb_order.order_ip,
+         wxb_order.order_time,
+         wxb_order.order_type,
+         wxb_order.pay_type,
+         wxb_order.alipay_state,
+         wxb_order.state
+         from wxb_order inner join wxb_good on wxb_good.good_id = wxb_order.good_id
+         inner join wxb_good_sku on wxb_good_sku.good_id = wxb_order.good_id
+        where wxb_good.customer_id = #{customerId}
+        <if test="orderType == 0">
+            order_type = 0
+        </if>
+        <if test="state != null">
+            state = #{state}
+        </if>
+        <if test="alipayState != null">
+            alipay_state = #{alipayState}
+        </if>
+        limit #{start},#{limit}
+    </select>
+<!--    public int updateOrder(Order order);-->
+    <update id="updateOrder">
+        update wxb_order set
+        state=#{state}
+        where oid = #{oid}
+    </update>
+<!--    public int insertOrder(Order order);-->
+    <insert id="insertOrder">
+        insert into wxb_order(order_id,province,city,area,address,buyer_reamrk,buyer_name,buyer_phone,sku_id,good_id)
+    values(#{orderId},#{province},#{city},#{area},#{address},#{buyerReamrk},#{buyerName},#{buyerPhone},#{skuId},#{goodId})
+    </insert>
+</mapper>

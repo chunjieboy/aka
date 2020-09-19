@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登陆</title>
+    <style>
+        body {
+            background: url('/imgs/bg.png') no-repeat;
+            background-size: 100% auto;
+        }
+
+        #login_box {
+            width: 20%;
+            height: 400px;
+            background-color: #00000060;
+            margin: auto;
+            margin-top: 10%;
+            text-align: center;
+            border-radius: 10px;
+            padding: 50px 50px;
+        }
+
+        #login_box input,
+        #login_box button {
+            outline: none;
+        }
+
+        #login_box h2 {
+            color: #ffffff90;
+            margin-top: 5%;
+        }
+
+        #login_box #form #input_box {
+            margin-top: 5%;
+        }
+
+        #login_box #form #input_box input {
+            border: 0;
+            width: 60%;
+            font-size: 15px;
+            color: #ffffff;
+            background: #ffffff00;
+            border-bottom: 2px solid #ffffff;
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
+
+        #login_box input {
+            margin-top: 50px;
+            width: 40%;
+            height: 20px;
+            border-radius: 10px;
+            border: 0;
+            color: #fff;
+            font-size: 15px;
+            background-image: linear-gradient(120deg, #f093fb 0%, #f5576c 100%);
+            cursor: pointer;
+        }
+
+        #login_box #sign_up {
+            margin-top: 45%;
+        }
+
+        #login_box #sign_up a {
+            color: #b94648;
+        }
+    </style>
+</head>
+<body>
+<div id="container">
+	<div id="login_box">
+	    <h2>登陆</h2>
+	    <div id="form">
+	        <div id="input_box">
+	            <input type="text" v-model="loginName"  placeholder="Username">
+	        </div>
+	        <div id="input_box">
+	            <input type="password" v-model="loginPwd"  placeholder="Password">
+	        </div>
+	    </div>
+	    <button 	class="layui-btn layui-btn-lg"  @click="login" >登陆</button>
+	    <br>
+	    <div id="sign_up">
+	        <a href="javascript:;">忘记密码?</a>
+	    </div>
+	</div>
+</div>
+
+<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+				<!-- 引入样式 -->
+		<link rel="stylesheet" type="text/css" href="js/element.css"/>
+		<!-- 引入组件库 -->
+		<script src="js/element.js"></script>
+		<script type="text/javascript" src="js/axios.min.js" ></script>
+		<script type="text/javascript" src="layui/layui.js"/>
+		<script type="text/javascript">
+			var layer;
+			layui.use("layer",function(){
+				var layer = layui.Layer();
+			});
+			var vm = new Vue({
+				el:"#container"
+				,data:{
+					loginName:"",
+					loginPwd:""
+				},
+				methods:{
+					login:function(){
+						axios.get("http://localhost:8080/customer/login",{params:{loginName:this.loginName,loginPwd:this.loginPwd}}).then(function(res){
+							if(res.data.code == 0){
+								var token = res.data.msg;
+								document.cookie = "token="+toke
+								location.href="index.html";
+							}else{
+								layer.msg(res.data.msg);
+							}
+						});
+					}
+				}
+			});
+		</script>
+</body>
+</html>

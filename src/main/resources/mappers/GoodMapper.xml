@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace = 所需实现的接口全限定名-->
+<mapper namespace="com.qf.wfx.merchant.dao.GoodDAO">
+    <resultMap id="goodMap" type="Good">
+        <id column="good_id" property="goodId"/>
+        <result column="good_name" property="goodName"/>
+        <result column="customer_id" property="customerId"/>
+        <result column="good_pic1" property="goodPic1"/>
+        <result column="good_pic2" property="goodPic2"/>
+        <result column="good_pic3" property="goodPic3"/>
+        <result column="promote_desc" property="promoteDesc"/>
+        <result column="copy_ids" property="copyIds"/>
+        <result column="copy_desc" property="copyDesc"/>
+        <result column="forward_link" property="forwardLink"/>
+        <result column="order_no" property="orderNo"/>
+        <result column="type_id" property="typeId"/>
+        <result column="tags" property="tags"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+        <result column="toped" property="toped"/>
+        <result column="recomed" property="recomed"/>
+        <result column="toped_time" property="topedTime"/>
+        <result column="recomed_time" property="recomedTime"/>
+        <result column="spc_id" property="spcId"/>
+        <result column="zon_id" property="zonId"/>
+        <result column="sell_num" property="sellNum"/>
+        <result column="website" property="webSite"/>
+        <result column="kfqq" property="kfqq"/>
+        <association property="goodType" javaType="GoodType">
+            <id column="type_id" property="typeId"/>
+            <result column="type_name" property="typeName"/>
+            <result column="parent_id" property="parentId"/>
+            <result column="alisa_code" property="alisaCode"/>
+        </association>
+        <association property="customer" javaType="Customer">
+            <id column="customer_id" property="customerId"/>
+            <result column="customer_name" property="customerName"/>
+        </association>
+        <association property="goodSku" javaType="GoodSku">
+            <id column="sku_id" property="skuId"/>
+            <result column="sku_name" property="skuName"/>
+            <result column="sku_price" property="skuPrice"/>
+            <result column="sku_pmoney" property="skuPmoney"/>
+            <result column="service_money" property="serviceMoney"/>
+        </association>
+    </resultMap>
+<!--    public List<Good> listAllGoods();-->
+    <select id="listAllGoods" resultMap="goodMap">
+        select good_name
+         from wxb_good inner join wxb_good_type on wxb_good.type_id = wxb_good_type.type_id
+        where wxb_good.customer_id = #{customerId}
+    </select>
+
+    <select id="selectGoodListByCustomerId" resultMap="goodMap">
+      select wxb_good.good_id,
+        wxb_good.good_name,
+        wxb_good.customer_id,
+        wxb_good.good_pic1,
+        wxb_good.good_pic2,
+        wxb_good.good_pic3,
+        wxb_good.promote_desc,
+        wxb_good.copy_ids,
+        wxb_good.copy_desc,
+        wxb_good.forward_link,
+        wxb_good.order_no,
+        wxb_good_type.type_id,
+        wxb_good_type.type_name,
+        wxb_good_type.parent_id,
+        wxb_good_type.alisa_code,
+        wxb_good.tags,
+        wxb_good.state,
+        wxb_good.create_time,
+        wxb_good.toped,
+        wxb_good.recomed,
+        wxb_good.toped_time,
+        wxb_good.recomed_time,
+        wxb_good.spc_id,
+        wxb_good.zon_id,
+        wxb_good.sell_num,
+        wxb_good.website,
+        wxb_good.kfqq
+        from wxb_good inner join wxb_good_type on wxb_good.type_id = wxb_good_type.type_id
+        where wxb_good.customer_id = #{customerId}
+        limit #{start},#{limit}
+    </select>
+
+    <!--    public List<Good> goodCount();-->
+    <select id="goodCount" resultMap="goodMap">
+        select good_id
+         from wxb_good inner join wxb_good_type on wxb_good.type_id = wxb_good_type.type_id
+
+    </select>
+
+<!--    public List<Good> selectGoodList(@Param("start") int start,-->
+<!--    @Param("size") int size);   // 根据商户id查询所有的商品信息-->
+    <select id="selectGoodList" resultMap="goodMap">
+      select wxb_good.good_id,
+        wxb_good.good_name,
+        wxb_good.customer_id,
+        wxb_good.good_pic1,
+        wxb_good.good_pic2,
+        wxb_good.good_pic3,
+        wxb_good.promote_desc,
+        wxb_good.copy_ids,
+        wxb_good.copy_desc,
+        wxb_good.forward_link,
+        wxb_good.order_no,
+        wxb_good_type.type_id,
+        wxb_good_type.type_name,
+        wxb_good_type.parent_id,
+        wxb_good_type.alisa_code,
+        wxb_good.tags,
+        wxb_good.state,
+        wxb_good.create_time,
+        wxb_good.toped,
+        wxb_good.recomed,
+        wxb_good.toped_time,
+        wxb_good.recomed_time,
+        wxb_good.spc_id,
+        wxb_good.zon_id,
+        wxb_good.sell_num,
+        wxb_good.website,
+        wxb_customer.customer_name,
+        wxb_good.kfqq
+        from wxb_good inner join wxb_good_type on wxb_good.type_id = wxb_good_type.type_id
+        inner join wxb_customer on wxb_customer.customer_id = wxb_good.customer_id
+        limit #{start},#{limit}
+    </select>
+
+<!--    public List<Good> searchGoods(@Param("keyword") String keyword,-->
+<!--    @Param("start") int start,-->
+<!--    @Param("limit") int limit);-->
+    <select id="searchGoods" resultMap="goodMap">
+      select wxb_good.good_id,
+        wxb_good.good_name,
+        wxb_good.customer_id,
+        wxb_good.good_pic1,
+        wxb_good.good_pic2,
+        wxb_good.good_pic3,
+        wxb_good.promote_desc,
+        wxb_good.copy_ids,
+        wxb_good.copy_desc,
+        wxb_good.forward_link,
+        wxb_good.order_no,
+        wxb_good_type.type_id,
+        wxb_good_type.type_name,
+        wxb_good_type.parent_id,
+        wxb_good_type.alisa_code,
+        wxb_good.tags,
+        wxb_good.state,
+        wxb_good.create_time,
+        wxb_good.toped,
+        wxb_good.recomed,
+        wxb_good.toped_time,
+        wxb_good.recomed_time,
+        wxb_good.spc_id,
+        wxb_good.zon_id,
+        wxb_good.sell_num,
+        wxb_good.website,
+        wxb_customer.customer_name,
+        wxb_good.kfqq
+        from wxb_good inner join wxb_good_type on wxb_good.type_id = wxb_good_type.type_id
+        inner join wxb_customer on wxb_customer.customer_id = wxb_good.customer_id
+        where  wxb_good.good_name LIKE '%${keyword}%'
+        limit #{start},#{limit}
+    </select>
+
+<!--    public int delectGood(String gid);-->
+    <delete id="delectGood" >
+        delete from wxb_good where good_id=#{goodId}
+    </delete>
+<!--    public int updateGood(Good good);-->
+    <update id="updateGood">
+        update wxb_good set
+        good_name=#{goodName},
+        good_pic1=#{goodPic1},
+        promote_desc=#{promoteDesc}
+        where good_id = #{goodId}
+    </update>
+<!--    public int insertGood(Good good);-->
+    <insert id="insertGood">
+        insert into wxb_good(good_id,good_name,customer_id,good_pic1,good_pic2,good_pic3,type_id,promote_desc)
+    values(#{goodId},#{goodName},#{customerId},#{goodPic1},#{goodPic2},#{goodPic3},#{typeId},#{promoteDesc})
+    </insert>
+
+<!--    public Good selectGoodById(String goodId);-->
+    <select id="selectGoodById" resultMap="goodMap">
+      select wxb_good.good_id,
+        wxb_good.good_name,
+        wxb_good.customer_id,
+        wxb_good.good_pic1,
+        wxb_good.good_pic2,
+        wxb_good.good_pic3,
+        wxb_good.promote_desc,
+        wxb_good.copy_ids,
+        wxb_good.copy_desc,
+        wxb_good.forward_link,
+        wxb_good.order_no,
+        wxb_good_type.type_id,
+        wxb_good_type.type_name,
+        wxb_good_type.parent_id,
+        wxb_good_type.alisa_code,
+        wxb_good.tags,
+        wxb_good.state,
+        wxb_good.create_time,
+        wxb_good.toped,
+        wxb_good.recomed,
+        wxb_good.toped_time,
+        wxb_good.recomed_time,
+        wxb_good.spc_id,
+        wxb_good.zon_id,
+        wxb_good.sell_num,
+        wxb_good.website,
+        wxb_customer.customer_name,
+        wxb_good.kfqq,
+        wxb_good_sku.sku_id,
+        wxb_good_sku.sku_name,
+        wxb_good_sku.sku_price,
+        wxb_good_sku.sku_pmoney,
+        wxb_good_sku.service_money
+        from wxb_good inner join wxb_good_type on wxb_good.type_id = wxb_good_type.type_id
+        inner join wxb_customer on wxb_customer.customer_id = wxb_good.customer_id
+         inner join wxb_good_sku on wxb_good.good_id = wxb_good_sku.good_id
+        where wxb_good.good_id=#{goodId}
+    </select>
+</mapper>
